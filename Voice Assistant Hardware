@@ -1,0 +1,104 @@
+# Voice Assistant Hardware using Python
+
+# Install:
+
+# pip install SpeechRecognition PyAudio
+
+import speech_recognition as sr
+
+recognizer = sr.Recognizer()
+
+# Hardware states
+
+devices = {
+"light": False,
+"fan": False,
+"buzzer": False
+}
+
+def control_device(command):
+command = command.lower()
+
+```
+if "light on" in command:
+    devices["light"] = True
+    print("Light: ON")
+
+elif "light off" in command:
+    devices["light"] = False
+    print("Light: OFF")
+
+elif "fan on" in command:
+    devices["fan"] = True
+    print("Fan: ON")
+
+elif "fan off" in command:
+    devices["fan"] = False
+    print("Fan: OFF")
+
+elif "buzzer on" in command:
+    devices["buzzer"] = True
+    print("Buzzer: ON")
+
+elif "buzzer off" in command:
+    devices["buzzer"] = False
+    print("Buzzer: OFF")
+
+elif "status" in command:
+    print("\n===== DEVICE STATUS =====")
+    for device, state in devices.items():
+        status = "ON" if state else "OFF"
+        print(f"{device.title()}: {status}")
+
+else:
+    print("Command not recognized.")
+```
+
+while True:
+
+```
+print("\n===== VOICE ASSISTANT HARDWARE =====")
+print("Say commands such as:")
+print("Light ON")
+print("Light OFF")
+print("Fan ON")
+print("Fan OFF")
+print("Buzzer ON")
+print("Buzzer OFF")
+print("Status")
+print("Exit")
+
+with sr.Microphone() as source:
+
+    print("\nListening...")
+
+    try:
+        recognizer.adjust_for_ambient_noise(
+            source,
+            duration=1
+        )
+
+        audio = recognizer.listen(
+            source,
+            timeout=5
+        )
+
+        command = recognizer.recognize_google(audio)
+
+        print("You said:", command)
+
+        if command.lower() == "exit":
+            print("Voice Assistant Closed.")
+            break
+
+        control_device(command)
+
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand.")
+
+    except sr.RequestError:
+        print("Speech recognition service is unavailable.")
+
+    except sr.WaitTimeoutError:
+        print("No voice command detected.")
+```
